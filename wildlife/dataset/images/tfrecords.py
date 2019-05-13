@@ -2,6 +2,81 @@ import tensorflow as tf
 import numpy as np
 import sys
 import os
+from wildlife.dataset import read_csv
+from wildlife.dataset.images.tuples import tuples_to_dicts
+from wildlife.dataset.images.preprocessing import load_and_preprocess_data_into_parallel
+
+
+def target_split_definition_sample(name):
+    directory = "/data/wildlife-project/datasets/target/" + name
+    split_names = ["target_train", "target_dev", "target_test"]
+    return directory, split_names
+
+
+def source_split_definition_sample(name):  # e.g. source("in-c14")
+    directory = "/data/wildlife-project/datasets/source/" + name
+    split_names = ["source_train", "source_dev"]
+    return directory, split_names
+
+
+def __printl(listing, verbose=False):
+    print("Length: " + str(len(listing)))
+    if verbose:
+        for r in listing:
+            print(r)
+
+            
+def __printll(listing, verbose=False):
+    for l in listing:
+        print("Length: " + str(len(l)))
+        if verbose:
+            for r in l:
+                print(r)
+        
+
+def create_tfrecords_from_csv(directory, split_names):
+    splits = [read_csv("/".join([directory, split_name + ".csv"])) for split_name in split_names]
+    __printll(splits)
+    
+    def exclude(listings, labels_to_exclude):
+        filtered_listings = []
+        for listing in listings:
+            filtered_listings.append([entry for entry in listing if entry[1][0] not in labels_to_exclude])
+        return filtered_listings
+
+    splits = exclude(splits, ["squirrel", "hedgehog"])
+    __printll(splits)
+    from random import shuffle
+    
+    __printl(splits[0][:5], True)
+    for split in splits:
+        shuffle(split)
+    __printl(splits[0][:5], True)
+    
+    split_dicts = []
+    for split in splits:
+        split_dicts.append(tuples_to_dicts(split))
+    __printl(split_dicts[0][:5], verbose=True)
+    
+    split_dicts = [load_and_preprocess_data_into_parallel(split_dict_listing, number_of_processes=20) for split_dict_listing in split_dicts]
+    
+    for split_dict_listing in split_dicts:
+        for imaget in split_dict_listing:
+            if imaget[0] == "Failure":
+                print(imaget)
+                
+    def collect_success(dicts):
+        return [imaget[1] for imaget in dicts if imaget[0] == "Success"]
+    
+    split_dicts = [collect_success(split_dict_listing) for split_dict_listing in split_dicts]
+    
+    for split_dict_listing in split_dicts:
+        print(len(split_dict_listing))
+        
+    tf_record_names = [split_name + ".tfrecord" for split_name in split_names]
+    for split_dict_listing, filename in zip(split_dicts, tf_record_names):
+        __write_tfrecord(split_dict_listing, directory, filename)
+
 
 def tfrecord_inputs(tfrecord_file, directory, batch_size=100):
     dataset = make_dataset("/".join([directory, tfrecord_file + ".tfrecord"]))
@@ -9,6 +84,7 @@ def tfrecord_inputs(tfrecord_file, directory, batch_size=100):
     iterator = dataset.make_one_shot_iterator()
     sample_op = iterator.get_next()
     return sample_op
+
 
 def load_tfrecord_in_memory(tfrecord_file, directory):
     tf.reset_default_graph()
@@ -27,13 +103,16 @@ def load_tfrecord_in_memory(tfrecord_file, directory):
             print("Loaded all inputs: {}".format(len(images_all)))
     return np.array(images_all), np.array(labels_all), np.array(infos_all)
 
+
 def int64_feature(values):
     if not isinstance(values, (tuple, list)):
         values = [values]
     return tf.train.Feature(int64_list=tf.train.Int64List(value=values))
 
+
 def bytes_feature(values):
     return tf.train.Feature(bytes_list=tf.train.BytesList(value=[values]))
+
 
 def image_to_tfexample(data, path, site, height, width, label):
     """
@@ -53,7 +132,8 @@ def image_to_tfexample(data, path, site, height, width, label):
       'image/label': bytes_feature(label)
   }))
 
-def write_tfrecord(image_tuples, target_directory, filename):
+
+def __write_tfrecord(image_tuples, target_directory, filename):
     """
         Creates a TFRecord file from a map of image files paths to class ids
     Args:
@@ -63,8 +143,8 @@ def write_tfrecord(image_tuples, target_directory, filename):
     """
     tf.reset_default_graph()
     
-    #image_path = tf.placeholder(dtype=tf.string)
-    #image_raw = tf.read_file(image_path)
+    # image_path = tf.placeholder(dtype=tf.string)
+    # image_raw = tf.read_file(image_path)
         
     errors = []
     num_images = len(image_tuples)
@@ -95,7 +175,8 @@ def write_tfrecord(image_tuples, target_directory, filename):
     print("Errors: {}".format(len(errors)))
     if len(errors) > 0:
         for (error_file, info, err) in errors:
-            print("Error one file: {} because: {} / {}".format(error_file, info ,err))
+            print("Error one file: {} because: {} / {}".format(error_file, info , err))
+
 
 def read_sample(example_raw):
     """
@@ -127,6 +208,7 @@ def read_sample(example_raw):
     label = example["image/label"]
     return image, label, info
 
+
 def make_dataset(tfrecord_filepath):
     """
         Returns a dataset ready to process a TFRecord file
@@ -134,6 +216,7 @@ def make_dataset(tfrecord_filepath):
     dataset = tf.data.TFRecordDataset(tfrecord_filepath)
     dataset = dataset.map(read_sample)
     return dataset 
+
 
 def write_label_file(labels_to_class_names, dataset_dir, filename="labels.txt"):
     """
@@ -148,6 +231,7 @@ def write_label_file(labels_to_class_names, dataset_dir, filename="labels.txt"):
         for label in labels_to_class_names:
             class_name = labels_to_class_names[label]
             f.write('%d:%s\n' % (label, class_name))
+
             
 def read_label_file(dataset_dir, filename="labels.txt"):
     """Reads the labels file and returns a mapping from ID to class name.
@@ -166,5 +250,6 @@ def read_label_file(dataset_dir, filename="labels.txt"):
     labels_to_class_names = {}
     for line in lines:
         index = line.index(':')
-        labels_to_class_names[int(line[:index])] = line[index+1:]
+        labels_to_class_names[int(line[:index])] = line[index + 1:]
     return labels_to_class_names
+
