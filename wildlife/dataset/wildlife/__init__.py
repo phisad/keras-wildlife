@@ -12,7 +12,7 @@ import collections
 from collections import OrderedDict
 import numpy as np
 import csv
-from wildlife.dataset.wildlife.mappings import list_sorted
+from wildlife.dataset.images.mappings import list_sorted
     
 ANIMAL_LABELS = ["Rabbit", "Hedgehog", "Marten", "Racoon", "Cat", "Wild_Boar",
                  "Fox", "Squirrel", "Horse", "Vole", "Roe_deer" , "Hare", "Fallow_deer", "Dog", "Bird"]

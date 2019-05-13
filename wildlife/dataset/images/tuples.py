@@ -3,29 +3,11 @@ Created on 03.05.2019
 
 @author: Philipp
 '''
-from PIL import Image
 from io import BytesIO
-import numpy as np
 import sys
+from wildlife.dataset.images import read_single_rgb
+from PIL import Image
 
-def filter_large_mapping(mapping):
-    large_mapping = {}
-    for cls in mapping:
-        large_mapping[cls] = __filter_large_listing(mapping[cls])
-    return large_mapping
-
-def __filter_large_listing(listing):
-    large_listing = []
-    total = len(listing)
-    counter = 0
-    for image_file in listing:
-        counter += 1
-        print('>> Checking image %d/%d' % (counter, total), end="\r")
-        with __read_single_rgb(image_file) as image:
-            if np.shape(image) >= (224,224,3):
-                large_listing.append(image_file)
-    print()
-    return large_listing
 
 def tuples_to_dicts(tuples):
     # data, path, site, height, width, label
@@ -44,8 +26,9 @@ def tuples_to_dicts(tuples):
         dicts.append(d)
     return dicts
 
+
 def __get_site(filepath):
-    filepath = filepath.replace("\\","/")
+    filepath = filepath.replace("\\", "/")
     filepath = filepath.split("/")[:-1]
     return "/".join(filepath)
 
@@ -53,12 +36,14 @@ def __get_site(filepath):
 from multiprocessing import Pool
 import tqdm
 
+
 def load_and_preprocess_data_into_parallel(dicts, number_of_processes):
     results = []
     with Pool(processes=number_of_processes) as pool:
         for result in tqdm.tqdm(pool.imap_unordered(__load_and_preprocess_single_defended, dicts), total=len(dicts)):
             results.append(result)
     return results
+
         
 def __load_and_preprocess_single_defended(imaged):
     try:
@@ -69,6 +54,7 @@ def __load_and_preprocess_single_defended(imaged):
         err = sys.exc_info()[1]
         error = (imaged["path"], err_msg, err)
         return ("Failure", error)
+
 
 def load_and_preprocess_data_into(dicts):
     total = len(dicts)
@@ -86,13 +72,14 @@ def load_and_preprocess_data_into(dicts):
     print()
     for error in errors:
         print(error)
+
         
 def __load_and_preprocess_single(imaged):
     """
         Read RGB, resize smallest, crop largest
     """
-    with __read_single_rgb(imaged["path"]) as image:
-        if not imaged["site"] == "imagenet": # wildlife image
+    with read_single_rgb(imaged["path"]) as image:
+        if not imaged["site"] == "imagenet":  # wildlife image
             image = __remove_status_bar_single(image)
         image = __resize_single_smallest_with_ratio(image, imaged["width"])
         image = __crop_single_largest(image)
@@ -103,6 +90,7 @@ def __load_and_preprocess_single(imaged):
         imaged["site"] = imaged["site"].encode()
         imaged["label"] = imaged["label"].encode()
 
+
 def __remove_status_bar_single(image):
     width, height = image.size
     height = height - 64
@@ -110,13 +98,6 @@ def __remove_status_bar_single(image):
     image = image.crop(box=to_crop_box)
     return image
 
-def __read_single_rgb(image_path):
-    """
-        images = [read_single_rgb(image_file) for image_file in image_files]
-    """
-    image = Image.open(image_path)
-    image = image.convert("RGB")
-    return image
 
 def __resize_smallest_dim_with_ratio(width, height, target):
     """
@@ -132,10 +113,12 @@ def __resize_smallest_dim_with_ratio(width, height, target):
         return target, int(rheight)
     return width, height
 
+
 def __resize_single_smallest_with_ratio(image, target):    
     width, height = __resize_smallest_dim_with_ratio(*image.size, target)
     image = image.resize((width, height), Image.BILINEAR)
     return image
+
 
 def __crop_largest_rectangle(width, height, verbose=False):
     if width == height:
@@ -157,6 +140,7 @@ def __crop_largest_rectangle(width, height, verbose=False):
     if height > width:
         return 0, offset_largest_start, width, offset_largest_end  
     return 0, 0, width, height    
+
 
 def __crop_single_largest(image, verbose=False):
     """

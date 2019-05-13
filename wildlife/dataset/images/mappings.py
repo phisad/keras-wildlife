@@ -5,6 +5,29 @@ Created on 11.05.2019
 '''
 from os import listdir
 from os.path import join
+import numpy as np
+from wildlife.dataset.images import read_single_rgb
+
+
+def filter_large_mapping(mapping):
+    large_mapping = {}
+    for cls in mapping:
+        large_mapping[cls] = __filter_large_listing(mapping[cls])
+    return large_mapping
+
+
+def __filter_large_listing(listing):
+    large_listing = []
+    total = len(listing)
+    counter = 0
+    for image_file in listing:
+        counter += 1
+        print('>> Checking image %d/%d' % (counter, total), end="\r")
+        with read_single_rgb(image_file) as image:
+            if np.shape(image) >= (224, 224, 3):
+                large_listing.append(image_file)
+    print()
+    return large_listing
 
 
 def mappings_to_tuples(mappings, prefix="", label_renaming={}):
