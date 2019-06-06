@@ -11,11 +11,8 @@ import numpy as np
 import json
 from wildlife.scripts import OPTION_DRY_RUN
 SECTION_DATASET = "DATASETS"
-OPTION_IMAGE_DATASET_DIRECTORY_PATH = "ImageDatasetDirectoryPath"
-OPTION_NUMBER_OF_TRAINING_IMAGES = "NumberOfTrainingImages"
-OPTION_NUMBER_OF_VALIDATION_IMAGES = "NumberOfValidationImages"
-OPTION_NUMBER_OF_TEST_IMAGES = "NumberOfTestImages"
-OPTION_PREPARATION_BATCH_SIZE = "PreparationBatchSize"
+OPTION_WILDLIFE_DATASET_DIRECTORY_PATH = "WildlifeDatasetDirectoryPath"
+OPTION_IMAGENET_DATASET_DIRECTORY_PATH = "ImagenetDatasetDirectoryPath"
 
 SECTION_MODEL = "MODEL"
 OPTION_PRINT_MODEL_SUMMARY = "PrintModelSummary"
@@ -99,20 +96,11 @@ class Configuration(object):
     def getModelDerivateName(self):
         return self.config.get(SECTION_MODEL, OPTION_MODEL_DERIVATE_NAME)
     
-    def getDatasetImagesDirectoryPath(self):
-        return self.config.get(SECTION_DATASET, OPTION_IMAGE_DATASET_DIRECTORY_PATH)
+    def getWildlifeDatasetDirectoryPath(self):
+        return self.config.get(SECTION_DATASET, OPTION_WILDLIFE_DATASET_DIRECTORY_PATH)
     
-    def getNumberOfTrainingImages(self):
-        return self.config.getint(SECTION_DATASET, OPTION_NUMBER_OF_TRAINING_IMAGES)
-    
-    def getNumberOfValidationImages(self):
-        return self.config.getint(SECTION_DATASET, OPTION_NUMBER_OF_VALIDATION_IMAGES)
-    
-    def getNumberOfTestImages(self):
-        return self.config.getint(SECTION_DATASET, OPTION_NUMBER_OF_TEST_IMAGES)
-    
-    def getPreparationBatchSize(self):
-        return self.config.getint(SECTION_DATASET, OPTION_PREPARATION_BATCH_SIZE)
+    def getImagenetDatasetDirectoryPath(self):
+        return self.config.get(SECTION_DATASET, OPTION_IMAGENET_DATASET_DIRECTORY_PATH)
     
     def getImageInputShape(self):
         shape = self.config.get(SECTION_MODEL, OPTION_IMAGE_INPUT_SHAPE)

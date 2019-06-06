@@ -11,8 +11,8 @@ from wildlife.dataset import write_csv_splits
 from wildlife.dataset.images.categories import split_categories
 
 
-def create_imagenet_dataset_splits():
-    mappings = list_imagenet()
+def create_imagenet_dataset_splits(source_directory, target_directory):
+    mappings = list_imagenet(source_directory)
     
     large_mappings = filter_large_mapping(mappings)
     
@@ -68,7 +68,7 @@ def create_imagenet_dataset_splits():
     for split in splits:
         print(len(split))
         
-    dirname = "in-c16"
+    dirname = "/in-c16"
     write_csv_splits(splits, 
                      filenames=["source_train.csv","source_dev.csv"], 
-                     directory="/data/wildlife-project/datasets/source/" + dirname)
+                     directory=target_directory + dirname)

@@ -1,3 +1,10 @@
+[DATASETS]
+# The wildlife dataset directory is supposed to contain a label.csv and the camera split directories 
+WildlifeDatasetDirectoryPath = /data/wildlife
+
+# The imagenet dataset directory is supposed to an image folder for each imagenet category to be used 
+ImagenetDatasetDirectoryPath = /data/imagenet
+
 [MODEL]
 PrintModelSummary = False
 
@@ -15,13 +22,13 @@ ImageInputShape = (224, 224, 3)
 GpuDevices = 0
 
 # The directory where the metrics will be written as tensorboard logs
-TensorboardLoggingDirectory = C:/Development/apps/eclipse-java-2018-12/tensorboard/logs
+TensorboardLoggingDirectory = /cache/tensorboard-logdir
 
 # The number of epochs (default: 256)
 Epochs = 256
 
 # The batch size (default: 256)
-BatchSize = 300
+BatchSize = 64
 
 # If True, use process-based threading (default: False)
 # Does not work well with Keras because out-of-memory problems are likely
@@ -34,16 +41,3 @@ Workers = 10
 
 # Maximal queues for training input generators (default: 10)
 MaxQueueSize = 10
-
-[DATASETS]
-# The dataset directory is supposed to contain dataset splits of train and validate 
-# in sub directories with the following names: <dir_path>/train and <dir_path>/validate
-ImageDatasetDirectoryPath = 
-
-# Useful to show a progress bar on preparation
-NumberOfTrainingImages = 82783
-NumberOfValidationImages = 40504
-NumberOfTestImages = 81434
-
-# The batch size to use for preparation tasks, when not given as a run option
-PreparationBatchSize = 100

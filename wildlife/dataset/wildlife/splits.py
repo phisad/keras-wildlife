@@ -9,8 +9,15 @@ from wildlife.dataset.wildlife import list_wildlife_labelled
 from wildlife.dataset.images.categories import split_categories
 from wildlife.dataset.images.mappings import mappings_to_tuples, list_sorted
 
-def create_wildlife_dataset_splits():
-    mappings, _ = list_wildlife_labelled()
+
+def create_wildlife_dataset_splits(source_directory, target_directory):
+    if not source_directory.endswith("/"):
+        source_directory = source_directory + "/"
+        
+    if not target_directory.endswith("/"):
+        target_directory = target_directory + "/"
+         
+    mappings, _ = list_wildlife_labelled(labelfile=source_directory + "label.csv")
     
     # label merging (but here rather to align to source dataset)
     # natural merge of deer
@@ -30,7 +37,7 @@ def create_wildlife_dataset_splits():
         "Cat"         : "cat"
     }
     
-    tuple_mappings = mappings_to_tuples(mappings, prefix="/data/wildlife/", label_renaming=label_renaming)
+    tuple_mappings = mappings_to_tuples(mappings, prefix=source_directory, label_renaming=label_renaming)
     list_sorted(tuple_mappings)
     
     # We need to create train and train_dev on the same run, so that train images are not within the train_dev set
@@ -80,4 +87,4 @@ def create_wildlife_dataset_splits():
     dirname = "wl-c11"
     write_csv_splits(splits,
                      filenames=["target_train.csv", "target_dev.csv", "target_test.csv"],
-                     directory="/data/wildlife-project/datasets/target/" + dirname)
+                     directory=target_directory + dirname)
