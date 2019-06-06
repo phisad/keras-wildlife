@@ -5,6 +5,9 @@ WildlifeDatasetDirectoryPath = /data/wildlife
 # The imagenet dataset directory is supposed to an image folder for each imagenet category to be used 
 ImagenetDatasetDirectoryPath = /data/imagenet
 
+# The dataset directory where split files and tf record file will be written to
+DatasetDirectoryPath = /data/wildlife-project
+
 [MODEL]
 PrintModelSummary = False
 

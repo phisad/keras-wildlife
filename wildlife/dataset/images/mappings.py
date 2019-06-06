@@ -39,7 +39,7 @@ def mappings_to_tuples(mappings, prefix="", label_renaming={}):
         label_mappings = mappings[label]
         if label in label_renaming:
             label = label_renaming[label]
-        tuples = [(prefix + filepath, label) for filepath in label_mappings]
+        tuples = [(prefix + "/" + filepath, label) for filepath in label_mappings]
         if label in tuple_mappings:
             tuple_mappings[label].extend(tuples)
         else:
