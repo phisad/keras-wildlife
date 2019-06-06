@@ -43,10 +43,12 @@ def main():
     if run_opts.command in ["all", "csv"]:
         print("csv: Write the dataset splits into csv files")
         if run_opts.dataset == "wildlife":
-            create_wildlife_dataset_splits()
+            dataset_dir = config.getWildlifeDatasetDirectoryPath()
+            create_wildlife_dataset_splits(dataset_dir, "wl-c11")
         
         if run_opts.dataset == "imagenet":
-            create_imagenet_dataset_splits()
+            dataset_dir = config.getImagenetDatasetDirectoryPath()
+            create_imagenet_dataset_splits(dataset_dir, "in-c16")
     
     """         
     if run_opts.command in ["all", "preprocess"]:

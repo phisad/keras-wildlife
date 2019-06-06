@@ -10,13 +10,10 @@ from wildlife.dataset.images.categories import split_categories
 from wildlife.dataset.images.mappings import mappings_to_tuples, list_sorted
 
 
-def create_wildlife_dataset_splits(source_directory, target_directory):
+def create_wildlife_dataset_splits(source_directory, target_split_directory_name):
     if not source_directory.endswith("/"):
         source_directory = source_directory + "/"
         
-    if not target_directory.endswith("/"):
-        target_directory = target_directory + "/"
-         
     mappings, _ = list_wildlife_labelled(labelfile=source_directory + "label.csv")
     
     # label merging (but here rather to align to source dataset)
@@ -84,7 +81,6 @@ def create_wildlife_dataset_splits(source_directory, target_directory):
     for split in splits:
         print(len(split))
         
-    dirname = "wl-c11"
     write_csv_splits(splits,
                      filenames=["target_train.csv", "target_dev.csv", "target_test.csv"],
-                     directory=target_directory + dirname)
+                     directory=source_directory + target_split_directory_name)
