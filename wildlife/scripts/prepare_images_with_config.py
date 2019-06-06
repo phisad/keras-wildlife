@@ -35,13 +35,14 @@ def main():
     print("Starting image preparation: {}".format(run_opts.command))
     
     if run_opts.command in ["all", "csv"]:
-        print("csv: Write the dataset splits into csv files")
         target_dir = config.getDatasetDirectoryPath()
         if run_opts.dataset == "wildlife":
+            print("csv: Write the dataset splits into csv files for 'wildlife' using " + target_dir)
             dataset_dir = config.getWildlifeDatasetDirectoryPath()
             create_wildlife_dataset_splits(dataset_dir, target_dir, "wl-c11")
         
         if run_opts.dataset == "imagenet":
+            print("csv: Write the dataset splits into csv files for 'imagenet' using " + target_dir)
             dataset_dir = config.getImagenetDatasetDirectoryPath()
             create_imagenet_dataset_splits(dataset_dir, target_dir, "in-c16")
     
