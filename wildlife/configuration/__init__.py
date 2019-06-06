@@ -13,6 +13,7 @@ from wildlife.scripts import OPTION_DRY_RUN
 SECTION_DATASET = "DATASETS"
 OPTION_WILDLIFE_DATASET_DIRECTORY_PATH = "WildlifeDatasetDirectoryPath"
 OPTION_IMAGENET_DATASET_DIRECTORY_PATH = "ImagenetDatasetDirectoryPath"
+OPTION_DATASET_DIRECTORY_PATH = "DatasetDirectoryPath"
 
 SECTION_MODEL = "MODEL"
 OPTION_PRINT_MODEL_SUMMARY = "PrintModelSummary"
@@ -102,6 +103,9 @@ class Configuration(object):
     def getImagenetDatasetDirectoryPath(self):
         return self.config.get(SECTION_DATASET, OPTION_IMAGENET_DATASET_DIRECTORY_PATH)
     
+    def getDatasetDirectoryPath(self):
+        return self.config.get(SECTION_DATASET, OPTION_DATASET_DIRECTORY_PATH)
+    
     def getImageInputShape(self):
         shape = self.config.get(SECTION_MODEL, OPTION_IMAGE_INPUT_SHAPE)
         shape_tuple = tuple(map(int, shape.strip('()').split(',')))
@@ -150,12 +154,12 @@ class Configuration(object):
         # Lookup file in user directory
         from pathlib import Path
         home_directory = str(Path.home())
-        config_path = "/".join([home_directory, "shatt-" + FILE_NAME])
+        config_path = "/".join([home_directory, "wildlife-" + FILE_NAME])
         if path.exists(config_path):
             return config_path
-        print("Warn: No existing 'shatt-configuration.ini' file at user home " + config_path)
+        print("Warn: No existing 'wildlife-configuration.ini' file at user home " + config_path)
         
         raise Exception("""Please place a 'configuration.ini' in the default location 
-                            or a 'shatt-configuration.ini' in your home directory 
+                            or a 'wildlife-configuration.ini' in your home directory 
                             or use the run option to specify a specific file""")
 
