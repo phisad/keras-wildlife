@@ -3,20 +3,9 @@ import numpy as np
 import sys
 import os
 from wildlife.dataset import read_csv
-from wildlife.dataset.images.tuples import tuples_to_dicts
+from wildlife.dataset.images.tuples import tuples_to_dicts_from_config
 from wildlife.dataset.images.preprocessing import load_and_preprocess_data_into_parallel
-
-
-def target_split_definition_sample(name):
-    directory = "/data/wildlife-project/datasets/target/" + name
-    split_names = ["target_train", "target_dev", "target_test"]
-    return directory, split_names
-
-
-def source_split_definition_sample(name):  # e.g. source("in-c14")
-    directory = "/data/wildlife-project/datasets/source/" + name
-    split_names = ["source_train", "source_dev"]
-    return directory, split_names
+from wildlife.dataset.images import get_tfrecord_filename
 
 
 def __printl(listing, verbose=False):
@@ -34,7 +23,7 @@ def __printll(listing, verbose=False):
                 print(r)
         
 
-def create_tfrecords_from_csv(directory, split_names):
+def create_tfrecords_by_csv_from_config(config, directory, split_names):
     splits = [read_csv("/".join([directory, split_name + ".csv"])) for split_name in split_names]
     __printll(splits)
     
@@ -55,7 +44,7 @@ def create_tfrecords_from_csv(directory, split_names):
     
     split_dicts = []
     for split in splits:
-        split_dicts.append(tuples_to_dicts(split))
+        split_dicts.append(tuples_to_dicts_from_config(config, split))
     __printl(split_dicts[0][:5], verbose=True)
     
     split_dicts = [load_and_preprocess_data_into_parallel(split_dict_listing, number_of_processes=20) for split_dict_listing in split_dicts]
@@ -73,22 +62,22 @@ def create_tfrecords_from_csv(directory, split_names):
     for split_dict_listing in split_dicts:
         print(len(split_dict_listing))
         
-    tf_record_names = [split_name + ".tfrecord" for split_name in split_names]
+    tf_record_names = [get_tfrecord_filename(split_name) for split_name in split_names]
     for split_dict_listing, filename in zip(split_dicts, tf_record_names):
         __write_tfrecord(split_dict_listing, directory, filename)
 
 
-def tfrecord_inputs(tfrecord_file, directory, batch_size=100):
-    dataset = make_dataset("/".join([directory, tfrecord_file + ".tfrecord"]))
+def tfrecord_inputs(split_name, directory, batch_size=100):
+    dataset = make_dataset("/".join([directory, get_tfrecord_filename(split_name)]))
     dataset = dataset.batch(batch_size)
     iterator = dataset.make_one_shot_iterator()
     sample_op = iterator.get_next()
     return sample_op
 
 
-def load_tfrecord_in_memory(tfrecord_file, directory):
+def load_tfrecord_in_memory(split_name, directory):
     tf.reset_default_graph()
-    inputs = tfrecord_inputs(tfrecord_file, directory)
+    inputs = tfrecord_inputs(split_name, directory)
     images_all = []
     labels_all = []
     infos_all = []

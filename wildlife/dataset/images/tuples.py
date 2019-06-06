@@ -5,7 +5,12 @@ Created on 03.05.2019
 '''
 
 
-def tuples_to_dicts(tuples):
+def tuples_to_dicts_from_config(config, tuples):
+    target_shape = config.getImageInputShape()
+    wildlife_path = config.getWildlifeDatasetDirectoryPath()
+    return tuples_to_dicts(tuples, wildlife_path, target_shape)
+    
+def tuples_to_dicts(tuples, wildlife_path="/data/wildlife/", target_shape=(224, 224)):
     # data, path, site, height, width, label
     dicts = []
     for tup in tuples:
@@ -15,10 +20,10 @@ def tuples_to_dicts(tuples):
         d["path"] = path
         d["label"] = label
         d["site"] = "imagenet"
-        if path.startswith("/data/wildlife/"):
-            d["site"] = __get_site(path[len("/data/wildlife/"):])
-        d["width"] = 224
-        d["height"] = 224
+        if path.startswith(wildlife_path):
+            d["site"] = __get_site(path[len(wildlife_path):])
+        d["width"] = target_shape[0]
+        d["height"] = target_shape[1]
         dicts.append(d)
     return dicts
 
