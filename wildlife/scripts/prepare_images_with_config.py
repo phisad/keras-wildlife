@@ -10,8 +10,7 @@ from wildlife.configuration import Configuration
 from wildlife.dataset.wildlife.splits import create_wildlife_dataset_splits
 from wildlife.dataset.imagenet.splits import create_imagenet_dataset_splits
 from wildlife.dataset.images import get_preprocessing_tfrecord_file
-from wildlife.dataset.images.tfrecords import create_tfrecords_from_csv, \
-    create_tfrecords_by_csv_from_config
+from wildlife.dataset.images.tfrecords import create_tfrecords_by_csv_from_config
 
 
 def to_split_dir(directory_path, split_name):
