@@ -56,13 +56,13 @@ def main():
     if run_opts.command in ["all", "preprocess"]:
         if run_opts.dataset == "wildlife":
             print("preprocess: Resizes images and stores them by image id in a TFRecord file for 'wildlife' using " + target_dir)
-            dataset_dir = config.getWildlifeDatasetDirectoryPath()
+            dataset_dir = config.getDatasetDirectoryPath()
             split_name = "wl-c11"
             split_files = ["target_train", "target_dev", "target_test"]
         
         if run_opts.dataset == "imagenet":
             print("preprocess: Resizes images and stores them by image id in a TFRecord files for 'imagenet' using " + target_dir)
-            dataset_dir = config.getImagenetDatasetDirectoryPath()
+            dataset_dir = config.getDatasetDirectoryPath()
             split_name = "in-c16"
             split_files = ["source_train", "source_dev"]
             
