@@ -7,7 +7,6 @@ Created on 01.03.2019
 
 from argparse import ArgumentParser
 from wildlife.configuration import Configuration
-from wildlife.scripts import OPTION_DRY_RUN
 from wildlife.dataset.wildlife.splits import create_wildlife_dataset_splits
 from wildlife.dataset.imagenet.splits import create_imagenet_dataset_splits
 
@@ -20,7 +19,6 @@ def main():
                         all: All of the above""")
     parser.add_argument("-c", "--configuration", help="Determine a specific configuration to use. If not specified, the default is used.")
     parser.add_argument("-d", "--dataset", default="wildlife", help="The dataset to operate on. One of [wildlife, imagenet]. Default: wildlife")
-    parser.add_argument("-b", "--batch_size", type=int)
     run_opts = parser.parse_args()
     
     if run_opts.configuration:
@@ -28,10 +26,6 @@ def main():
     else:
         config = Configuration()
         
-    config[OPTION_DRY_RUN] = run_opts.dryrun
-    config["batch_size"] = run_opts.batch_size
-    config["num_images"] = run_opts.num_images
-
     import os
     os.environ["CUDA_VISIBLE_DEVICES"] = str(config.getGpuDevices())
     
