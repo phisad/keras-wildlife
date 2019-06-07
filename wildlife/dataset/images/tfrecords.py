@@ -78,7 +78,7 @@ def __create_dataset_sample_op(directory_path, split_name, batch_size=100):
 
 
 def load_tfrecord_in_memory(directory_path, split_name):
-    sample_op = __create_dataset_sample_op(directory_path, split_name)
+    sample_op = __create_dataset_sample_op(directory_path, split_name, batch_size=100)
     images_all = []
     labels_all = []
     infos_all = []
@@ -87,7 +87,7 @@ def load_tfrecord_in_memory(directory_path, split_name):
         try:
             while True:
                 processed_count = processed_count + 1
-                print(">> Loading image into memory {:d}".format(processed_count), end="\r")
+                print(">> Loading images into memory {:d}".format(processed_count * 100), end="\r")
                 images, labels, infos = sess.run(sample_op)
                 images_all.extend(images)
                 labels_all.extend(labels)

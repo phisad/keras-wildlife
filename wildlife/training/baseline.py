@@ -59,17 +59,18 @@ def start_training_baseline_from_config(config, dataset_dir, split_name,
                                         split_file_validate="target_dev",
                                         do_multiclass=True):
 
-    print("\n{:-^80}".format("Preparing datasets for training"))
     dataset_split_dir = to_split_dir(dataset_dir, split_name)
     
-    print("\n{} {} {}".format("Loading training data into memory from:", dataset_split_dir, split_file_train))
+    print("\n{:-^80}".format("Loading training data into memory from {} {}".format(dataset_split_dir, split_file_train)))
     x_train, y_train, _ = load_tfrecord_in_memory(dataset_split_dir, split_file_train)
     
-    print("\n{} {} {}".format("Loading validation data into memory from:", dataset_split_dir, split_file_train))
+    print("\n{:-^80}".format("Loading validation data into memory from {} {}".format(dataset_split_dir, split_file_train)))
     x_validate, y_validate, _ = load_tfrecord_in_memory(dataset_split_dir, split_file_validate)
     
     x_train = x_train / 255
     x_validate = x_validate / 255
+    
+    print("\n{:-^80}".format("Preparing training labels for {} classification problem".format("multi" if do_multiclass else "binary")))
     
     print("Labels ({}): {}".format(len(np.unique(y_train)), np.unique(y_train)))
     if do_multiclass:
@@ -87,7 +88,7 @@ def start_training_baseline_from_config(config, dataset_dir, split_name,
     
     print("\n{:-^80}".format("Preparing callbacks for training"))
     logdir = config.getTensorboardLoggingDirectory()
-    tensorboard, log_path = create_tensorboard_from_dataset(logdir, "softmax", do_multiclass, split_name)
+    log_path, tensorboard = create_tensorboard_from_dataset(logdir, "softmax", do_multiclass, split_name)
     checkpointer = create_checkpointer(log_path, "wildlife-baseline-softmax-bn.h5")
         
     print("\n{:-^80}".format("Start training"))
