@@ -61,10 +61,12 @@ def start_training_baseline_from_config(config, dataset_dir, split_name,
 
     dataset_split_dir = to_split_dir(dataset_dir, split_name)
     
-    print("\n{:-^80}".format("Loading training data into memory from {} {}".format(dataset_split_dir, split_file_train)))
+    dataset_string = "Loading {} data into memory from {}".format(split_file_train, dataset_split_dir)
+    print("\n{:-^80}".format(dataset_string))
     x_train, y_train, _ = load_tfrecord_in_memory(dataset_split_dir, split_file_train)
     
-    print("\n{:-^80}".format("Loading validation data into memory from {} {}".format(dataset_split_dir, split_file_train)))
+    dataset_string = "Loading {} data into memory from {}".format(split_file_validate, dataset_split_dir)
+    print("\n{:-^80}".format(dataset_string))
     x_validate, y_validate, _ = load_tfrecord_in_memory(dataset_split_dir, split_file_validate)
     
     x_train = x_train / 255
@@ -89,7 +91,7 @@ def start_training_baseline_from_config(config, dataset_dir, split_name,
     print("\n{:-^80}".format("Preparing callbacks for training"))
     logdir = config.getTensorboardLoggingDirectory()
     log_path, tensorboard = create_tensorboard_from_dataset(logdir, "softmax", do_multiclass, split_name)
-    checkpointer = create_checkpointer(log_path, "wildlife-baseline-softmax-bn.h5")
+    checkpointer = create_checkpointer(log_path, "wildlife-baseline-softmax-bn")
         
     print("\n{:-^80}".format("Start training"))
     number_of_epochs = config.getEpochs()
