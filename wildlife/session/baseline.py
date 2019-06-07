@@ -4,6 +4,7 @@ Created on 06.06.2019
 @author: Philipp
 '''
 import numpy as np
+import tensorflow as tf
 from wildlife import to_split_dir
 from wildlife.dataset.images.tfrecords import load_tfrecord_in_memory
 from wildlife.model import focus
@@ -11,6 +12,7 @@ from wildlife.session import to_categorical
 from wildlife.session.callbacks import create_tensorboard_from_dataset, \
     create_checkpointer
 from wildlife.session.weights import calculate_class_weights
+from wildlife.session.prediction import prediction_evaluate
 
 
 def as_binary_problem():
@@ -117,3 +119,32 @@ def start_training_baseline_from_config(config, dataset_dir, split_name,
               max_queue_size=config.getMaxQueueSize()
             )
             # initial_epoch=0 if not initial_epoch else initial_epoch)
+
+
+def start_evaluate_baseline(path_to_model,
+                           dataset_dir, split_name,
+                           split_file_test="target_test",
+                           do_multiclass=True):
+
+    dataset_split_dir = to_split_dir(dataset_dir, split_name)
+    
+    dataset_string = "Loading {} data into memory from {}".format(split_file_test, dataset_split_dir)
+    print("\n{:-^80}".format(dataset_string))
+    x_test, y_test, _ = load_tfrecord_in_memory(dataset_split_dir, split_file_test)
+    x_test = x_test / 255
+    
+    print("\n{:-^80}".format("Preparing training labels for {} classification problem".format("multi" if do_multiclass else "binary")))
+    
+    print("Labels ({}): {}".format(len(np.unique(y_test)), np.unique(y_test)))
+    if do_multiclass:
+        title_mappings, label_to_id = as_multiclass_problem()
+    else:
+        title_mappings, label_to_id = as_binary_problem()
+        
+    _, y_test_cat = to_categorical(y_test, label_to_id)
+    
+    print("\n{:-^80}".format("Loading model from " + str(path_to_model)))
+    model = tf.keras.models.load_model(path_to_model)
+    
+    print("\n{:-^80}".format("Start prediction"))
+    prediction_evaluate(model, np.squeeze(x_test), np.squeeze(y_test_cat), title_mappings, verbose=1) 

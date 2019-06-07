@@ -8,20 +8,20 @@ Created on 01.03.2019
 from argparse import ArgumentParser
 from wildlife.configuration import Configuration
 from wildlife.scripts import OPTION_DRY_RUN
-from wildlife.session.baseline import start_training_baseline_from_config
+from wildlife.session.baseline import start_evaluate_baseline,\
+    start_training_baseline_from_config
 
 
 def main():
     parser = ArgumentParser("Start the model using the configuration.ini")
-    parser.add_argument("command", help="""One of [training, predict]. 
+    parser.add_argument("command", help="""One of [training, evaluate]. 
                         training: Start training with the configuration.
-                        predict: Apply a model on the dataset with the configuration and write the result file""")
+                        evaluate: Apply a model on the dataset with the configuration""")
     parser.add_argument("-c", "--configuration", help="Determine a specific configuration to use. If not specified, the default is used.")
     parser.add_argument("-f", "--path_to_model", help="The absolute path to the model to predict or continue training.")
-    parser.add_argument("-i", "--initial_epoch", type=int, help="The initial epoch to use when continuing training. This is required for continuing training.")
     parser.add_argument("-s", "--split_name", help="""The split name to perform the prediction or training on. This is required for predict. For example 'wl-c11'.""")
-    parser.add_argument("-d", "--dryrun", action="store_true")
     parser.add_argument("-m", "--do_multiclass", action="store_true", default=False)
+    parser.add_argument("-d", "--dryrun", action="store_true")
     
     run_opts = parser.parse_args()
     
@@ -46,11 +46,15 @@ def main():
     
     dataset_dir = config.getDatasetDirectoryPath()
     if run_opts.command == "training":
-        
         if model_type == "baseline":
             start_training_baseline_from_config(config, dataset_dir, split_name, do_multiclass=run_opts.do_multiclass)
     
-        
+    if run_opts.command == "evaluate":
+        if not run_opts.path_to_model:
+            raise Exception("Please provide the path to the model using the '-f' option and retry.")
+        if model_type == "baseline":
+            start_evaluate_baseline(run_opts.path_to_model, dataset_dir, split_name, do_multiclass=run_opts.do_multiclass)
+            
 if __name__ == '__main__':
     main()
     
