@@ -18,7 +18,8 @@ OPTION_DATASET_DIRECTORY_PATH = "DatasetDirectoryPath"
 SECTION_MODEL = "MODEL"
 OPTION_PRINT_MODEL_SUMMARY = "PrintModelSummary"
 OPTION_MODEL_TYPE = "ModelType"
-OPTION_MODEL_DERIVATE_NAME = "ModelDerivateName"
+OPTION_MODEL_CLASSIFIER = "ModelClassifier"
+OPTION_USE_BATCH_NORMALIZATION = "UseBatchNormalization"
 OPTION_IMAGE_INPUT_SHAPE = "ImageInputShape"
 
 SECTION_TRAINING = "TRAINING"
@@ -94,8 +95,14 @@ class Configuration(object):
     def getPrintModelSummary(self):
         return self.config.getboolean(SECTION_MODEL, OPTION_PRINT_MODEL_SUMMARY)
     
-    def getModelDerivateName(self):
-        return self.config.get(SECTION_MODEL, OPTION_MODEL_DERIVATE_NAME)
+    def getUseBatchNormalization(self):
+        return self.config.getboolean(SECTION_MODEL, OPTION_USE_BATCH_NORMALIZATION)
+    
+    def getModelType(self):
+        return self.config.get(SECTION_MODEL, OPTION_MODEL_TYPE)
+    
+    def getModelClassifier(self):
+        return self.config.get(SECTION_MODEL, OPTION_MODEL_CLASSIFIER)
     
     def getWildlifeDatasetDirectoryPath(self):
         return self.config.get(SECTION_DATASET, OPTION_WILDLIFE_DATASET_DIRECTORY_PATH)
@@ -122,9 +129,6 @@ class Configuration(object):
 
     def getBatchSize(self):
         return self.config.getint(SECTION_TRAINING, OPTION_BATCH_SIZE)
-
-    def getModelType(self):
-        return self.config.get(SECTION_MODEL, OPTION_MODEL_TYPE)
     
     def getUseMultiProcessing(self):
         return self.config.getboolean(SECTION_TRAINING, OPTION_USE_MULTI_PROCESSING)    

@@ -14,8 +14,11 @@ PrintModelSummary = False
 # Which model to run (default: baseline)
 ModelType = baseline
 
-# A more specific name
-ModelDerivateName = target
+# The classifier to use on top of the vgg model (default: softmax)
+ModelClassifier = softmax
+
+# Whether to apply normalization before classifiers
+UseBatchNormalization = True
 
 # The expected image input shape. The image get resized to this shape.
 ImageInputShape = (224, 224, 3)

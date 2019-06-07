@@ -8,7 +8,7 @@ Created on 01.03.2019
 from argparse import ArgumentParser
 from wildlife.configuration import Configuration
 from wildlife.scripts import OPTION_DRY_RUN
-from wildlife.training.baseline import start_training_baseline_from_config
+from wildlife.session.baseline import start_training_baseline_from_config
 
 
 def main():
@@ -17,7 +17,6 @@ def main():
                         training: Start training with the configuration.
                         predict: Apply a model on the dataset with the configuration and write the result file""")
     parser.add_argument("-c", "--configuration", help="Determine a specific configuration to use. If not specified, the default is used.")
-    parser.add_argument("-t", "--model_type", help="The model type. One of [baseline].")
     parser.add_argument("-f", "--path_to_model", help="The absolute path to the model to predict or continue training.")
     parser.add_argument("-i", "--initial_epoch", type=int, help="The initial epoch to use when continuing training. This is required for continuing training.")
     parser.add_argument("-s", "--split_name", help="""The split name to perform the prediction or training on. This is required for predict. For example 'wl-c11'.""")
@@ -41,12 +40,14 @@ def main():
     
     config.dump()
     
+    model_type = config.getModelType()
+    if not model_type:
+        raise Exception("Please configure the model type and retry.")
+    
     dataset_dir = config.getDatasetDirectoryPath()
     if run_opts.command == "training":
-        if not run_opts.model_type:
-            raise Exception("Please provide the model type and retry.")
         
-        if run_opts.model_type == "baseline":
+        if model_type == "baseline":
             start_training_baseline_from_config(config, dataset_dir, split_name, do_multiclass=run_opts.do_multiclass)
     
         

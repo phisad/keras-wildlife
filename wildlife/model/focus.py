@@ -23,17 +23,17 @@ import tensorflow as tf
 from wildlife import get_dimensions
 
 
-def create_model(model_type, y_train_cat, title_mappings=None, use_bn=True):
+def create_model(classifier_type, y_train_cat, title_mappings=None, use_batch_norm=True):
     """
         The model is compiled before return.
         
-        @param model_type: str
+        @param classifier_type: str
             Either "experts" or "softmax" see description above.
         @param y_train_cat: array
             The categorical training label ids to automatically determine the number of outputs.
         @param title_mappings: dict (for experts only)
             The mapping from category id to label name to name the expert outputs.
-        @param use_bn: boolean (for softmax only)
+        @param use_batch_norm: boolean (for softmax only)
             If a batch normalization layer should be attached before the softmax classifier.
     """
     print("Create imagenet/focus model")
@@ -49,7 +49,7 @@ def create_model(model_type, y_train_cat, title_mappings=None, use_bn=True):
     number_of_outputs = get_dimensions(y_train_cat)
     print("Determined number of outputs: " + str(number_of_outputs))
     
-    if model_type == "experts":
+    if classifier_type == "experts":
         experts_models = []
         for expert_group in range(number_of_outputs):
             expert_group = title_mappings[expert_group]
@@ -62,9 +62,9 @@ def create_model(model_type, y_train_cat, title_mappings=None, use_bn=True):
         model = tf.keras.Model(base_model.input, experts_models)
         model.compile(optimizer=tf.keras.optimizers.Adam(lr=0.00001), loss="binary_crossentropy", metrics=['accuracy'])
 
-    if model_type == "softmax":
+    if classifier_type == "softmax":
         top_model = base_model.layers[-1].output
-        if use_bn:
+        if use_batch_norm:
             print("Adding batch normalization layer before softmax classifier")
             top_model = tf.keras.layers.BatchNormalization(name="output_bn")(top_model)    
         top_model = tf.keras.layers.Dense(number_of_outputs, activation="softmax", name="output")(top_model)

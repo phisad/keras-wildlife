@@ -32,7 +32,7 @@ import tensorflow as  tf
 from wildlife import get_dimensions, is_multiclass
 
 
-def create_model(y_train_cat, focus_model_path=None, use_bn=True):
+def create_model(y_train_cat, focus_model_path=None, use_batch_norm=True):
     """
         The model is compiled before return.
         
@@ -40,7 +40,7 @@ def create_model(y_train_cat, focus_model_path=None, use_bn=True):
             The categorical training label ids to automatically determine the number of outputs.
         @param focus_model_path: str
             The path to a model already pre-trained on the imagenet dataset.
-        @param use_bn: boolean 
+        @param use_batch_norm: boolean 
             If a batch normalization layer should be attached before the adapter network.
     """
     print("Create wildlife/target model")
@@ -64,7 +64,7 @@ def create_model(y_train_cat, focus_model_path=None, use_bn=True):
         print("Increasing capacity, because multi-classification task is detected")
         capacity = 100
 
-    if use_bn:
+    if use_batch_norm:
         print("Adding batch normalization layer before adapter network")
         model = tf.keras.layers.BatchNormalization(name="adapter_bn")(model)    
 

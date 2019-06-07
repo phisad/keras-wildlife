@@ -86,12 +86,15 @@ def start_training_baseline_from_config(config, dataset_dir, split_name,
     class_weights = calculate_class_weights(y_train_ids, title_mappings)
     
     print("\n{:-^80}".format("Preparing model for training"))
-    model = focus.create_model("softmax", y_train_cat, use_bn=True)
+    model_classifier = config.getModelClassifier()
+    use_bn = config.getUseBatchNormalization()
+    model = focus.create_model(model_classifier, y_train_cat, use_batch_norm=use_bn)
     
     print("\n{:-^80}".format("Preparing callbacks for training"))
     logdir = config.getTensorboardLoggingDirectory()
-    log_path, tensorboard = create_tensorboard_from_dataset(logdir, "softmax", do_multiclass, split_name)
-    checkpointer = create_checkpointer(log_path, "wildlife-baseline-softmax-bn")
+    log_path, tensorboard = create_tensorboard_from_dataset(logdir, model_classifier, do_multiclass, split_name)
+    model_name = "wildlife-baseline-{}-{}".format(model_classifier, "bn" if use_bn else "no-bn")
+    checkpointer = create_checkpointer(log_path, model_name)
         
     print("\n{:-^80}".format("Start training"))
     number_of_epochs = config.getEpochs()
