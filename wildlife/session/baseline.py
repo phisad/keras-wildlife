@@ -6,11 +6,11 @@ Created on 06.06.2019
 import numpy as np
 from wildlife import to_split_dir
 from wildlife.dataset.images.tfrecords import load_tfrecord_in_memory
-from wildlife.training import to_categorical
 from wildlife.model import focus
-from wildlife.training.weights import calculate_class_weights
-from wildlife.training.callbacks import create_tensorboard_from_dataset, \
+from wildlife.session import to_categorical
+from wildlife.session.callbacks import create_tensorboard_from_dataset, \
     create_checkpointer
+from wildlife.session.weights import calculate_class_weights
 
 
 def as_binary_problem():
