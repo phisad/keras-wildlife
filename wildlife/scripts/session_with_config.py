@@ -47,7 +47,7 @@ def main():
             raise Exception("Please provide the model type and retry.")
         
         if run_opts.model_type == "baseline":
-            start_training_baseline_from_config(config, dataset_dir, split_name, run_opts.do_multiclass)
+            start_training_baseline_from_config(config, dataset_dir, split_name, do_multiclass=run_opts.do_multiclass)
     
         
 if __name__ == '__main__':

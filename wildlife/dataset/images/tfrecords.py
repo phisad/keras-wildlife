@@ -67,8 +67,8 @@ def create_tfrecords_by_csv_from_config(config, directory, split_names):
         __write_tfrecord(split_dict_listing, directory, filename)
 
 
-def create_dataset(split_name, directory, batch_size=100):
-    dataset_path = "/".join([directory, get_tfrecord_filename(split_name)])
+def __create_dataset_sample_op(directory_path, split_name, batch_size=100):
+    dataset_path = "/".join([directory_path, get_tfrecord_filename(split_name)])
     print("Create tfrecord dataset from " + dataset_path)
     dataset = make_dataset(dataset_path)
     dataset = dataset.batch(batch_size)
@@ -77,9 +77,8 @@ def create_dataset(split_name, directory, batch_size=100):
     return sample_op
 
 
-def load_tfrecord_in_memory(split_name, directory):
-    # tf.reset_default_graph()
-    inputs = create_dataset(split_name, directory)
+def load_tfrecord_in_memory(directory_path, split_name):
+    sample_op = __create_dataset_sample_op(directory_path, split_name)
     images_all = []
     labels_all = []
     infos_all = []
@@ -88,13 +87,14 @@ def load_tfrecord_in_memory(split_name, directory):
         try:
             while True:
                 processed_count = processed_count + 1
-                print(">> Loading input into memory {:d}".format(processed_count), end="\r")
-                images, labels, infos = sess.run(inputs)
+                print(">> Loading image into memory {:d}".format(processed_count), end="\r")
+                images, labels, infos = sess.run(sample_op)
                 images_all.extend(images)
                 labels_all.extend(labels)
                 infos_all.extend(infos)
         except:
-            print("Loaded all inputs: {}".format(len(images_all)))
+            print()
+            print("Loaded all images: {}".format(len(images_all)))
     return np.array(images_all), np.array(labels_all), np.array(infos_all)
 
 
