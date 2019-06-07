@@ -59,10 +59,13 @@ def start_training_baseline_from_config(config, dataset_dir, split_name,
                                         split_file_validate="target_dev",
                                         do_multiclass=True):
 
-    print("\n{:-^80}".format("Preparing datasets for training (loaded into memory"))
+    print("\n{:-^80}".format("Preparing datasets for training"))
     dataset_split_dir = to_split_dir(dataset_dir, split_name)
     
+    print("\n{} {} {}".format("Loading training data into memory from:", dataset_split_dir, split_file_train))
     x_train, y_train, _ = load_tfrecord_in_memory(split_file_train, dataset_split_dir)
+    
+    print("\n{} {} {}".format("Loading validation data into memory from:", dataset_split_dir, split_file_train))
     x_validate, y_validate, _ = load_tfrecord_in_memory(split_file_validate, dataset_split_dir)
     
     x_train = x_train / 255
