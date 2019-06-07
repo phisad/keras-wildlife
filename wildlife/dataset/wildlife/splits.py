@@ -32,7 +32,7 @@ def create_wildlife_dataset_splits(source_directory, target_directory, target_sp
     }
     
     tuple_mappings = mappings_to_tuples(mappings, prefix=source_directory, label_renaming=label_renaming)
-    list_sorted(tuple_mappings)
+    # list_sorted(tuple_mappings)
     
     # We need to create train and train_dev on the same run, so that train images are not within the train_dev set
     categories = [
@@ -62,21 +62,21 @@ def create_wildlife_dataset_splits(source_directory, target_directory, target_sp
     print("Background per split: {} ({})".format(count_bg_per_split, np.around(count_bg_per_split / count_total_per_split, 2)))
     print()
     
-    idx_to_label = [tups[0][1] for tups,_, listing in categories]
-    idx_to_label = dict([(idx, label) for idx, label in enumerate(idx_to_label)])
-    print("Index to label      : \n{}".format(idx_to_label))
-    print()
+    #idx_to_label = [tups[0][1] for tups,_, listing in categories]
+    #idx_to_label = dict([(idx, label) for idx, label in enumerate(idx_to_label)])
+    #print("Index to label      : \n{}".format(idx_to_label))
+    #print()
     
-    for split_idx, reference_value in [(0, 6030), (1, 1255), (2, 1255)]:
-        print("Class weights for Split / Reference: {} / {}".format(split_idx, reference_value))
-        class_weights = np.around(1.0 / (count_arr[:,split_idx] / reference_value), 0)
-        class_weights_dict = dict([(idx_to_label[idx], w) for idx, w in enumerate(class_weights)])
-        print("{}".format(class_weights_dict))
-        print()
+    #for split_idx, reference_value in [(0, 6030), (1, 1255), (2, 1255)]:
+    #    print("Class weights for Split / Reference: {} / {}".format(split_idx, reference_value))
+    #    class_weights = np.around(1.0 / (count_arr[:,split_idx] / reference_value), 0)
+    #    class_weights_dict = dict([(idx_to_label[idx], w) for idx, w in enumerate(class_weights)])
+    #    print("{}".format(class_weights_dict))
+    #    print()
         
     splits = split_categories(categories)
-    for split in splits:
-        print(len(split))
+    #for split in splits:
+    #    print(len(split))
         
     write_csv_splits(splits,
                      filenames=["target_train.csv", "target_dev.csv", "target_test.csv"],

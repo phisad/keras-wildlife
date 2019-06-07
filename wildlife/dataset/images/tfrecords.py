@@ -25,7 +25,7 @@ def __printll(listing, verbose=False):
 
 def create_tfrecords_by_csv_from_config(config, directory, split_names):
     splits = [read_csv("/".join([directory, split_name + ".csv"])) for split_name in split_names]
-    __printll(splits)
+    #__printll(splits)
     
     def exclude(listings, labels_to_exclude):
         filtered_listings = []
@@ -34,7 +34,7 @@ def create_tfrecords_by_csv_from_config(config, directory, split_names):
         return filtered_listings
 
     splits = exclude(splits, ["squirrel", "hedgehog"])
-    __printll(splits)
+    #__printll(splits)
     from random import shuffle
     
     __printl(splits[0][:5], True)

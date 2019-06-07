@@ -5,7 +5,7 @@ Created on 12.05.2019
 '''
 
 import tensorflow as  tf
-from wildlife import __get_dimensions, __is_multiclass
+from wildlife import get_dimensions, is_multiclass
 
 
 def __keras_z_log(batch):
@@ -59,18 +59,18 @@ def create_prediction_model(x_train, y_train_cat):
     """
         Create a prediction model. This can be trained on outputs of the focus model.
     """
-    number_of_inputs = __get_dimensions(x_train)
-    number_of_outputs = __get_dimensions(y_train_cat)
+    number_of_inputs = get_dimensions(x_train)
+    number_of_outputs = get_dimensions(y_train_cat)
 
     capacity = 10
     learning_rate = 0.001
-    if __is_multiclass(y_train_cat):
+    if is_multiclass(y_train_cat):
         capacity = 100
     
     model = tf.keras.Sequential()
     model.add(tf.keras.layers.Dense(capacity, activation="elu", name="adapter_1", input_dim=number_of_inputs))
     model.add(tf.keras.layers.Dense(capacity, activation="elu", name="adapter_2"))
-    if __is_multiclass(y_train_cat):
+    if is_multiclass(y_train_cat):
         model.add(tf.keras.layers.Dense(capacity, activation="elu", name="adapter_3"))
         model.add(tf.keras.layers.Dense(capacity, activation="elu", name="adapter_4"))
     model.add(tf.keras.layers.Dense(number_of_outputs, activation="softmax", name="adapter_out"))
