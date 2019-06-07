@@ -38,11 +38,11 @@ def create_checkpointer(tagged_log_path, model_name, store_per_epoch=False):
     else:
         model_name = model_name + ".h5"
     model_path = "/".join([tagged_log_path, model_name])
-    print("- Checkpoint monitor: min [val_loss] at " + model_path)
+    print("- Checkpoint monitor: max [val_acc] at " + model_path)
     checkpointer = tf.keras.callbacks.ModelCheckpoint(model_path,
-                                                      monitor="val_loss",
-                                                      mode="min",
-                                                      save_best_only=False,
+                                                      monitor="val_acc",
+                                                      mode="max",
+                                                      save_best_only=True,
                                                       save_weights_only=False,
                                                       verbose=1,
                                                       period=1)
