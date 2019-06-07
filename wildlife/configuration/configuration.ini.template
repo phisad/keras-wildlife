@@ -27,10 +27,10 @@ GpuDevices = 0
 # The directory where the metrics will be written as tensorboard logs
 TensorboardLoggingDirectory = /cache/tensorboard-logdir
 
-# The number of epochs (default: 256)
-Epochs = 256
+# The number of epochs (default: 20)
+Epochs = 20
 
-# The batch size (default: 256)
+# The batch size (default: 64)
 BatchSize = 64
 
 # If True, use process-based threading (default: False)
@@ -38,7 +38,7 @@ BatchSize = 64
 # on Windows. Better use False and increase the number of worker
 UseMultiProcessing = False
 
-# Maximum number of processes to spin up when using process-based threading (default: 1)
+# Maximum number of processes to spin up when using process-based threading (default: 10)
 # This also works without multi-processsing, but only with Sequences as generators
 Workers = 10
 
