@@ -12,10 +12,11 @@ from wildlife.dataset.imagenet.splits import create_imagenet_dataset_splits
 from wildlife.dataset.images import get_preprocessing_tfrecord_file
 from wildlife.dataset.images.tfrecords import create_tfrecords_by_csv_from_config
 from wildlife import to_split_dir
+from wildlife.dataset.wildlife import list_wildlife_labelled
 
 def main():
     parser = ArgumentParser("Prepare the dataset for training")
-    parser.add_argument("command", help="""One of [csv, preprocess, all].
+    parser.add_argument("command", help="""One of [list, csv, preprocess, all].
                         csv: Write the dataset splits into csv files
                         preprocess: Resizes images and stores them by image id in a TFRecord file 
                         all: All of the above""")
@@ -38,6 +39,12 @@ def main():
     
     target_dir = config.getDatasetDirectoryPath()
     
+    if run_opts.command in ["all", "list"]:
+        if run_opts.dataset == "wildlife":
+            dataset_dir = config.getWildlifeDatasetDirectoryPath()
+            labelfile = dataset_dir + "/label.csv"
+            list_wildlife_labelled(labelfile)
+        
     if run_opts.command in ["all", "csv"]:
         if run_opts.dataset == "wildlife":
             print("csv: Write the dataset splits into csv files for 'wildlife' using " + target_dir)
