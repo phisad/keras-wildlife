@@ -14,6 +14,7 @@ from wildlife.dataset.images.tfrecords import create_tfrecords_by_csv_from_confi
 from wildlife import to_split_dir
 from wildlife.dataset.wildlife import list_wildlife_labelled
 
+
 def main():
     parser = ArgumentParser("Prepare the dataset for training")
     parser.add_argument("command", help="""One of [list, csv, preprocess, all].
@@ -22,6 +23,7 @@ def main():
                         all: All of the above""")
     parser.add_argument("-c", "--configuration", help="Determine a specific configuration to use. If not specified, the default is used.")
     parser.add_argument("-d", "--dataset", default="wildlife", help="The dataset to operate on. One of [wildlife, imagenet]. Default: wildlife")
+    parser.add_argument("-a", "--use_all", action="store_true", help="Whether to create a single split with all images. (Only wildlife supported) Default: False")
     run_opts = parser.parse_args()
     
     if run_opts.configuration:
@@ -49,7 +51,7 @@ def main():
         if run_opts.dataset == "wildlife":
             print("csv: Write the dataset splits into csv files for 'wildlife' using " + target_dir)
             dataset_dir = config.getWildlifeDatasetDirectoryPath()
-            create_wildlife_dataset_splits(dataset_dir, target_dir, "wl-c11")
+            create_wildlife_dataset_splits(dataset_dir, target_dir, "wl-c11", use_all=run_opts.use_all)
         
         if run_opts.dataset == "imagenet":
             print("csv: Write the dataset splits into csv files for 'imagenet' using " + target_dir)
