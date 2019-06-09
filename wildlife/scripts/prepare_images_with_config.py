@@ -22,6 +22,7 @@ def main():
                         preprocess: Resizes images and stores them by image id in a TFRecord file 
                         all: All of the above""")
     parser.add_argument("-c", "--configuration", help="Determine a specific configuration to use. If not specified, the default is used.")
+    parser.add_argument("-f", "--split_files", help="A whitespace separated list of file names. For wildlife defaults to [target_train, target_dev, target_test]")
     parser.add_argument("-d", "--dataset", default="wildlife", help="The dataset to operate on. One of [wildlife, imagenet]. Default: wildlife")
     parser.add_argument("-a", "--use_all", action="store_true", help="Whether to create a single split with all images. (Only wildlife supported) Default: False")
     run_opts = parser.parse_args()
@@ -70,6 +71,9 @@ def main():
             dataset_dir = config.getDatasetDirectoryPath()
             split_name = "in-c16"
             split_files = ["source_train", "source_dev"]
+            
+        if run_opts.split_files:
+            split_files = run_opts.split_files 
             
         tfrecord_file = get_preprocessing_tfrecord_file(dataset_dir, split_name)
         if tfrecord_file:
