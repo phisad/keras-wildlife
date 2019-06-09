@@ -73,7 +73,7 @@ def main():
             split_files = ["source_train", "source_dev"]
             
         if run_opts.split_files:
-            split_files = run_opts.split_files 
+            split_files = run_opts.split_files.split(" ") 
             
         tfrecord_file = get_preprocessing_tfrecord_file(dataset_dir, split_name)
         if tfrecord_file:
