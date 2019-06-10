@@ -184,13 +184,9 @@ def start_evaluate_baseline(path_to_model,
                 images, labels, _ = sess.run(sample_op)
                 images = images / 255
                 _, labels_categorical = to_categorical(labels, label_to_id)
-                print("labels_categorical", np.shape(labels_categorical))
-                print("labels_categorical", labels_categorical[:5])
                 ground_truth_categorical.extend(labels_categorical)
                 result = model.predict_on_batch(images)
                 results.extend(result)
-                print("result", np.shape(result))
-                print("result", result[:5])
                 if processed_count > 2:
                     break
         except Exception as e:
