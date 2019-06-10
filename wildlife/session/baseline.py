@@ -187,10 +187,8 @@ def start_evaluate_baseline(path_to_model,
                 ground_truth_categorical.extend(labels_categorical)
                 result = model.predict_on_batch(images)
                 results.extend(result)
-                if processed_count > 2:
-                    break
         except Exception as e:
-            print(e)
+            print()
             print("Applied model on all images: {}".format(len(results)))
     
     results = np.array(results)
