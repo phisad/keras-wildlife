@@ -170,24 +170,19 @@ def start_evaluate_baseline(path_to_model,
     else:
         title_mappings, label_to_id = as_binary_problem()
     
-    print("\n{:-^80}".format("Loading model from " + str(path_to_model)))
-    model = tf.keras.models.load_model(path_to_model)
-    
     print("\n{:-^80}".format("Start prediction"))
     results = []
     ground_truth_categorical = []
-    processed_count = 0
     with tf.Session() as sess:
+        print("\n{:-^80}".format("Loading model from " + str(path_to_model)))
+        model = tf.keras.models.load_model(path_to_model)
+        processed_count = 0
         try:
             while True:
                 processed_count = processed_count + 1
                 print(">> Apply model on images {:d}".format(processed_count * 100), end="\r")
                 images, labels, _ = sess.run(sample_op)
                 images = images / 255
-                #print("labels", np.shape(labels))
-                #print("labels", labels[:5])
-                #print("images", np.shape(images))
-                #print("images", images[:5])
                 _, labels_categorical = to_categorical(labels, label_to_id)
                 print("labels_categorical", np.shape(labels_categorical))
                 print("labels_categorical", labels_categorical[:5])
