@@ -18,15 +18,15 @@ def convert_label_to_ids(y_dataset, label_to_id):
         Convert a y_dataset that is based on label names to corresponding id numbers.
         For example: (deer, tree, human) becomes (1, 0, 0) for {b'tree': 0, b'human':0, b'deer':1}
     """
-    print("convert_label_to_ids", 1, label_to_id)
-    print("convert_label_to_ids", 2, y_dataset[:5])
     y_dataset = np.array(__normalize_strings(y_dataset))
-    print("convert_label_to_ids", 3, y_dataset[:5]) 
     for label in label_to_id:
-        print("convert_label_to_ids", label)
         label_idx = np.squeeze(np.argwhere(y_dataset == label))
-        print("convert_label_to_ids", label, label_idx)
-        if np.shape(label_idx)[0] != 0:
+        if np.ndim(label_idx) == 0:
+            # scalar to list array
+            label_idx = np.array([label_idx])
+        first_dimension = np.shape(label_idx)[0]
+        if first_dimension > 0: 
+            # put label everywhere in y_dataset
             y_dataset[label_idx] = label_to_id[label]
-    print("convert_label_to_ids", 4, y_dataset) 
-    return y_dataset.astype(np.uint32)
+    y_dataset = y_dataset.astype(np.uint32) 
+    return y_dataset
