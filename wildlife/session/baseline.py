@@ -198,8 +198,8 @@ def start_evaluate_baseline(path_to_model,
                 print("result", result[:5])
                 if processed_count > 100:
                     break
-        except:
-            print()
+        except Exception as e:
+            print(e)
             print("Applied model on all images: {}".format(len(results)))
             
     results = np.array(results)
