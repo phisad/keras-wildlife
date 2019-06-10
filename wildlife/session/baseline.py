@@ -191,7 +191,7 @@ def start_evaluate_baseline(path_to_model,
                 results.extend(result)
                 print("result", np.shape(result))
                 print("result", result[:5])
-                if processed_count > 100:
+                if processed_count > 1:
                     break
         except Exception as e:
             print(e)
