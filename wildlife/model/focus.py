@@ -23,7 +23,7 @@ import tensorflow as tf
 from wildlife import get_dimensions
 
 
-def create_model(classifier_type, y_train_cat, title_mappings=None, use_batch_norm=True):
+def create_model(classifier_type, y_train_cat, title_mappings=None, use_batch_norm=True, use_dropout=True):
     """
         The model is compiled before return.
         
@@ -66,7 +66,10 @@ def create_model(classifier_type, y_train_cat, title_mappings=None, use_batch_no
         top_model = base_model.layers[-1].output
         if use_batch_norm:
             print("Adding batch normalization layer before softmax classifier")
-            top_model = tf.keras.layers.BatchNormalization(name="output_bn")(top_model)    
+            top_model = tf.keras.layers.BatchNormalization(name="output_bn")(top_model)
+        if use_dropout:
+            print("Adding dropout layer before softmax classifier")
+            top_model = tf.keras.layers.Dropout(rate=0.3, name="output_do")(top_model)
         top_model = tf.keras.layers.Dense(number_of_outputs, activation="softmax", name="output")(top_model)
         
         print("Compile SOFTMAX model with {} optimizer, categorical loss and metrics".format("Adam"))

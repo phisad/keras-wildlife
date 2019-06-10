@@ -24,7 +24,7 @@ def main():
     parser.add_argument("-c", "--configuration", help="Determine a specific configuration to use. If not specified, the default is used.")
     parser.add_argument("-f", "--split_files", help="A whitespace separated list of file names. For wildlife defaults to [target_train, target_dev, target_test]")
     parser.add_argument("-d", "--dataset", default="wildlife", help="The dataset to operate on. One of [wildlife, imagenet]. Default: wildlife")
-    parser.add_argument("-a", "--use_all", action="store_true", help="Whether to create a single split with all images. (Only wildlife supported) Default: False")
+    parser.add_argument("-m", "--split_method", help="One of [weighted, single, small]")
     run_opts = parser.parse_args()
     
     if run_opts.configuration:
@@ -51,8 +51,12 @@ def main():
     if run_opts.command in ["all", "csv"]:
         if run_opts.dataset == "wildlife":
             print("csv: Write the dataset splits into csv files for 'wildlife' using " + target_dir)
+            
+            if not run_opts.split_method :
+                raise Exception("Cannot prepare, when split method is not chosen. Please provide the method using the '-m' option and retry.")
+            
             dataset_dir = config.getWildlifeDatasetDirectoryPath()
-            create_wildlife_dataset_splits(dataset_dir, target_dir, "wl-c11", use_all=run_opts.use_all)
+            create_wildlife_dataset_splits(dataset_dir, target_dir, "wl-c11", method=run_opts.split_method)
         
         if run_opts.dataset == "imagenet":
             print("csv: Write the dataset splits into csv files for 'imagenet' using " + target_dir)
