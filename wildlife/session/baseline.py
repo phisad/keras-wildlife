@@ -201,7 +201,7 @@ def start_evaluate_baseline(path_to_model,
         except Exception as e:
             print(e)
             print("Applied model on all images: {}".format(len(results)))
-            
+    """        
     results = np.array(results)
     results = np.squeeze(results)
     
@@ -209,4 +209,5 @@ def start_evaluate_baseline(path_to_model,
     ground_truth = np.squeeze(ground_truth)
     
     prediction_classes = analyse_results(results, ground_truth)
-    print_metrics(prediction_classes, ground_truth, title_mappings) 
+    print_metrics(prediction_classes, ground_truth, title_mappings)
+    """ 
