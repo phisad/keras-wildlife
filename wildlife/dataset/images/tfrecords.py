@@ -67,7 +67,7 @@ def create_tfrecords_by_csv_from_config(config, directory, split_names):
         __write_tfrecord(split_dict_listing, directory, filename)
 
 
-def __create_dataset_sample_op(directory_path, split_name, batch_size=100):
+def create_dataset_sample_op(directory_path, split_name, batch_size=100):
     dataset_path = "/".join([directory_path, get_tfrecord_filename(split_name)])
     print("Create tfrecord dataset from " + dataset_path)
     dataset = make_dataset(dataset_path)
@@ -78,7 +78,7 @@ def __create_dataset_sample_op(directory_path, split_name, batch_size=100):
 
 
 def load_tfrecord_in_memory(directory_path, split_name):
-    sample_op = __create_dataset_sample_op(directory_path, split_name, batch_size=100)
+    sample_op = create_dataset_sample_op(directory_path, split_name, batch_size=100)
     images_all = []
     labels_all = []
     infos_all = []

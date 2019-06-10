@@ -8,8 +8,8 @@ Created on 01.03.2019
 from argparse import ArgumentParser
 from wildlife.configuration import Configuration
 from wildlife.scripts import OPTION_DRY_RUN
-from wildlife.session.baseline import start_evaluate_baseline,\
-    start_training_baseline_from_config
+from wildlife.session.baseline import start_evaluate_baseline_in_memory, \
+    start_training_baseline_from_config, start_evaluate_baseline
 
 
 def main():
@@ -22,6 +22,7 @@ def main():
     parser.add_argument("-s", "--split_name", help="""The split name to perform the prediction or training on. This is required for predict. For example 'wl-c11'.""")
     parser.add_argument("-sf", "--split_files", help="A whitespace separated list of file names. For wildlife training defaults to [target_train, target_dev, target_test]")
     parser.add_argument("-m", "--do_multiclass", action="store_true", default=False)
+    parser.add_argument("-l", "--inmemory", action="store_true", default=False, help="Whether to load all data into memory before operation.")
     parser.add_argument("-d", "--dryrun", action="store_true")
     
     run_opts = parser.parse_args()
@@ -56,8 +57,12 @@ def main():
         if model_type == "baseline":
             split_file_test = "target_test"
             if run_opts.split_files:
-                split_file_test = run_opts.split_files.split(" ")[0] # expect only a single file here for now
-            start_evaluate_baseline(run_opts.path_to_model, dataset_dir, split_name, split_file_test, do_multiclass=run_opts.do_multiclass)
+                split_file_test = run_opts.split_files.split(" ")[0]  # expect only a single file here for now
+            if run_opts.inmemory:
+                start_evaluate_baseline_in_memory(run_opts.path_to_model, dataset_dir, split_name, split_file_test, do_multiclass=run_opts.do_multiclass)
+            else:
+                start_evaluate_baseline(run_opts.path_to_model, dataset_dir, split_name, split_file_test, do_multiclass=run_opts.do_multiclass)
+
             
 if __name__ == '__main__':
     main()

@@ -42,7 +42,7 @@ def prediction_evaluate(model, x_test, y_true, title_mappings, verbose=0):
         Evaluate the prediction results. Returns the prediction results.
     """
     y_hat = apply_pred_model(model, x_test, y_true, verbose)
-    analyse_results(y_hat, y_true, title_mappings) 
+    print_metrics(y_hat, y_true, title_mappings) 
     return y_hat
 
 
@@ -66,7 +66,9 @@ def z_log(predictions, verbose=False):
 
 def apply_pred_model(pred_model, x_dataset, y_dataset, verbose=0):
     predictions = predict_on(pred_model, x_dataset, return_transpose=False, verbose_level=verbose)
+    return analyse_results(predictions, y_dataset)
     
+def analyse_results(predictions, y_dataset):
     prediction_classes = np.round(predictions).astype(np.int32)
     prediction_classes = np.squeeze(prediction_classes)
     
@@ -105,7 +107,7 @@ def apply_pred_model_argmax(pred_model, x_dataset):
     return predictions_sparse
 
 
-def analyse_results(predictions, y_dataset, ids_to_labels):
+def print_metrics(predictions, y_dataset, ids_to_labels):
     predictions = __shrink(predictions)
     y_dataset = __shrink(y_dataset)
     
