@@ -31,24 +31,6 @@ def __load_and_preprocess_single_defended(imaged):
         return ("Failure", error)
 
 
-def load_and_preprocess_data_into(dicts):
-    total = len(dicts)
-    counter = 0
-    errors = []
-    for d in dicts:
-        counter += 1
-        print('>> Load and preprocess image %d/%d' % (counter, total), end="\r")
-        try:
-            __load_and_preprocess_single(d)
-        except:
-            err_msg = sys.exc_info()[0]
-            err = sys.exc_info()[1]
-            errors.append((d["path"], err_msg, err))
-    print()
-    for error in errors:
-        print(error)
-
-        
 def __load_and_preprocess_single(imaged):
     """
         Read RGB, resize smallest, crop largest

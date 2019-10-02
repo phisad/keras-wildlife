@@ -5,48 +5,18 @@ Created on 03.05.2019
 '''
 import numpy as np
 
-import tensorflow as tf
-from wildlife.dataset.wildlife.results import WildlifeResults
-
-
-def start_prediction(config, path_to_model, source_split, target_split):
-    results = WildlifeResults.create(config, source_split)
-    with tf.Session():
-        # The following are loaded as 'flat' files on the top directory
-        prediction_sequence = None
-        
-        model = None #__get_model(config, path_to_model, 1)
-        
-        dryrun = config.is_dryrun()
-        processed_count = 0
-        expected_num_batches = len(prediction_sequence)
-        try:
-            for batch_inputs, batch_questions in prediction_sequence.one_shot_iterator():
-                batch_predictions = model.predict_on_batch(batch_inputs)
-                results.add_batch(batch_questions, batch_predictions)
-                processed_count = processed_count + 1
-                print(">> Processing batches {:d}/{:d} ({:3.0f}%)".format(processed_count, expected_num_batches, processed_count / expected_num_batches * 100), end="\r")
-                if dryrun and processed_count > 10:
-                    raise Exception("Dryrun finished")
-        except:
-            print("Processed all images: {}".format(processed_count))
-        
-    results.write_results_file(path_to_model, target_split)
-    results.write_human_results_file(path_to_model)
-
-
 
 def prediction_evaluate(model, x_test, y_true, title_mappings, verbose=0):
     """
         Run the model against a test dataset to create prediction results. 
         Evaluate the prediction results. Returns the prediction results.
     """
-    y_hat = apply_pred_model(model, x_test, y_true, verbose)
+    y_hat = __apply_pred_model(model, x_test, y_true, verbose)
     print_metrics(y_hat, y_true, title_mappings) 
     return y_hat
 
 
-def predict_on(model, x_dataset, return_transpose=True, verbose_level=0):
+def __predict_on(model, x_dataset, return_transpose=True, verbose_level=0):
     predictions = model.predict(x_dataset, 100, verbose=verbose_level)
     predictions = np.squeeze(predictions)
     if return_transpose:
@@ -54,19 +24,10 @@ def predict_on(model, x_dataset, return_transpose=True, verbose_level=0):
     return predictions
 
 
-def z_log(predictions, verbose=False):
-    log_predictions = np.log(predictions)
-    z_predictions = (log_predictions - np.mean(log_predictions)) / np.std(log_predictions)
-    if verbose:
-        print("Predictions: '[%s]'" % ', '.join(map(str, predictions[:5])))
-        print("log-predictions: '[%s]'" % ', '.join(map(str, log_predictions[:5])))
-        print("z-log-predictions: '[%s]'" % ', '.join(map(str, z_predictions[:5])))
-    return z_predictions
-
-
-def apply_pred_model(pred_model, x_dataset, y_dataset, verbose=0):
-    predictions = predict_on(pred_model, x_dataset, return_transpose=False, verbose_level=verbose)
+def __apply_pred_model(pred_model, x_dataset, y_dataset, verbose=0):
+    predictions = __predict_on(pred_model, x_dataset, return_transpose=False, verbose_level=verbose)
     return analyse_results(predictions, y_dataset)
+
     
 def analyse_results(predictions, y_dataset):
     prediction_classes = np.round(predictions).astype(np.int32)
@@ -98,13 +59,6 @@ def analyse_results(predictions, y_dataset):
     print("False negatives (total): {:.2} {} / {}".format(false_negatives / total_images, false_negatives, total_images))
     print()
     return prediction_classes
-
-
-def apply_pred_model_argmax(pred_model, x_dataset):
-    predictions_sparse = predict_on(pred_model, x_dataset, return_transpose=False)
-    predictions_sparse = np.argmax(predictions_sparse, axis=1).astype(np.int32)
-    predictions_sparse = np.squeeze(predictions_sparse)
-    return predictions_sparse
 
 
 def print_metrics(predictions, y_dataset, ids_to_labels):

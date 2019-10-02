@@ -8,9 +8,9 @@ Created on 03.05.2019
 def tuples_to_dicts_from_config(config, tuples):
     target_shape = config.getImageInputShape()
     wildlife_path = config.getWildlifeDatasetDirectoryPath()
-    return tuples_to_dicts(tuples, wildlife_path, target_shape)
+    return __tuples_to_dicts(tuples, wildlife_path, target_shape)
     
-def tuples_to_dicts(tuples, wildlife_path="/data/wildlife/", target_shape=(224, 224)):
+def __tuples_to_dicts(tuples, wildlife_path="/data/wildlife/", target_shape=(224, 224)):
     # data, path, site, height, width, label
     dicts = []
     for tup in tuples:

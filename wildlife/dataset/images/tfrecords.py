@@ -1,7 +1,6 @@
 import tensorflow as tf
 import numpy as np
 import sys
-import os
 from wildlife.dataset import read_csv
 from wildlife.dataset.images.tuples import tuples_to_dicts_from_config
 from wildlife.dataset.images.preprocessing import load_and_preprocess_data_into_parallel
@@ -70,7 +69,7 @@ def create_tfrecords_by_csv_from_config(config, directory, split_names):
 def create_dataset_sample_op(directory_path, split_name, batch_size=100):
     dataset_path = "/".join([directory_path, get_tfrecord_filename(split_name)])
     print("Create tfrecord dataset from " + dataset_path)
-    dataset = make_dataset(dataset_path)
+    dataset = __make_dataset(dataset_path)
     dataset = dataset.batch(batch_size)
     iterator = dataset.make_one_shot_iterator()
     sample_op = iterator.get_next()
@@ -98,17 +97,17 @@ def load_tfrecord_in_memory(directory_path, split_name):
     return np.array(images_all), np.array(labels_all), np.array(infos_all)
 
 
-def int64_feature(values):
+def __int64_feature(values):
     if not isinstance(values, (tuple, list)):
         values = [values]
     return tf.train.Feature(int64_list=tf.train.Int64List(value=values))
 
 
-def bytes_feature(values):
+def __bytes_feature(values):
     return tf.train.Feature(bytes_list=tf.train.BytesList(value=[values]))
 
 
-def image_to_tfexample(data, path, site, height, width, label):
+def __image_to_tfexample(data, path, site, height, width, label):
     """
         Creates a TFRecord example image entry.
     Args:
@@ -118,12 +117,12 @@ def image_to_tfexample(data, path, site, height, width, label):
         class_id: The image label
     """
     return tf.train.Example(features=tf.train.Features(feature={
-      'image/data': bytes_feature(data),
-      'image/path': bytes_feature(path),
-      'image/site': bytes_feature(site),
-      'image/height': int64_feature(height),
-      'image/width': int64_feature(width),
-      'image/label': bytes_feature(label)
+      'image/data': __bytes_feature(data),
+      'image/path': __bytes_feature(path),
+      'image/site': __bytes_feature(site),
+      'image/height': __int64_feature(height),
+      'image/width': __int64_feature(width),
+      'image/label': __bytes_feature(label)
   }))
 
 
@@ -151,7 +150,7 @@ def __write_tfrecord(image_tuples, target_directory, filename):
                 print('>> Converting image %d/%d' % (processed_count, num_images), end="\r")
                 
                 try:
-                    example = image_to_tfexample(
+                    example = __image_to_tfexample(
                         image_tuple["data"],
                         image_tuple["path"],
                         image_tuple["site"],
@@ -172,7 +171,7 @@ def __write_tfrecord(image_tuples, target_directory, filename):
             print("Error one file: {} because: {} / {}".format(error_file, info , err))
 
 
-def read_sample(example_raw):
+def __read_sample(example_raw):
     """
         Read a single TFRecord example and converting into an image
     Args:
@@ -203,47 +202,10 @@ def read_sample(example_raw):
     return image, label, info
 
 
-def make_dataset(tfrecord_filepath):
+def __make_dataset(tfrecord_filepath):
     """
         Returns a dataset ready to process a TFRecord file
     """
     dataset = tf.data.TFRecordDataset(tfrecord_filepath)
-    dataset = dataset.map(read_sample)
+    dataset = dataset.map(__read_sample)
     return dataset 
-
-
-def write_label_file(labels_to_class_names, dataset_dir, filename="labels.txt"):
-    """
-        Writes a file with the list of class names row-wise like "1:class1".
-    Args:
-        labels_to_class_names: A map of (integer) labels to class names.
-        dataset_dir: The directory in which the labels file should be written.
-        filename: The filename where the class names are written.
-    """
-    labels_filename = os.path.join(dataset_dir, filename)
-    with tf.gfile.Open(labels_filename, 'w') as f:
-        for label in labels_to_class_names:
-            class_name = labels_to_class_names[label]
-            f.write('%d:%s\n' % (label, class_name))
-
-            
-def read_label_file(dataset_dir, filename="labels.txt"):
-    """Reads the labels file and returns a mapping from ID to class name.
-    Args:
-        dataset_dir: The directory in which the labels file is found.
-        filename: The filename where the class names are written.
-    Returns:
-        A map from a label (integer) to class name.
-    """
-    labels_filename = os.path.join(dataset_dir, filename)
-    with tf.gfile.Open(labels_filename, 'rb') as f:
-        lines = f.read().decode()
-        lines = lines.split('\n')
-        lines = filter(None, lines)
-
-    labels_to_class_names = {}
-    for line in lines:
-        index = line.index(':')
-        labels_to_class_names[int(line[:index])] = line[index + 1:]
-    return labels_to_class_names
-

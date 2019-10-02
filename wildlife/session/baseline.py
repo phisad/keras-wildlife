@@ -17,7 +17,7 @@ from wildlife.session.prediction import prediction_evaluate, analyse_results, \
     print_metrics
 
 
-def as_binary_problem():
+def __as_binary_problem():
     # relinking adaption and power adaption
     label_to_id = {
         "background"  :  0,
@@ -36,7 +36,7 @@ def as_binary_problem():
     return title_mappings, label_to_id
 
 
-def as_multiclass_problem():
+def __as_multiclass_problem():
     label_to_id = {
         "background"  :  0,
         "horse"       :  1,  # domestic animal
@@ -80,9 +80,9 @@ def start_training_baseline_from_config(config, dataset_dir, split_name,
     
     print("Labels ({}): {}".format(len(np.unique(y_train)), np.unique(y_train)))
     if do_multiclass:
-        title_mappings, label_to_id = as_multiclass_problem()
+        title_mappings, label_to_id = __as_multiclass_problem()
     else:
-        title_mappings, label_to_id = as_binary_problem()
+        title_mappings, label_to_id = __as_binary_problem()
         
     y_train_ids, y_train_cat = to_categorical(y_train, label_to_id)
     _, y_validate_cat = to_categorical(y_validate, label_to_id)
@@ -140,9 +140,9 @@ def start_evaluate_baseline_in_memory(path_to_model,
     
     print("Labels ({}): {}".format(len(np.unique(y_test)), np.unique(y_test)))
     if do_multiclass:
-        title_mappings, label_to_id = as_multiclass_problem()
+        title_mappings, label_to_id = __as_multiclass_problem()
     else:
-        title_mappings, label_to_id = as_binary_problem()
+        title_mappings, label_to_id = __as_binary_problem()
         
     _, y_test_cat = to_categorical(y_test, label_to_id)
     
@@ -167,9 +167,9 @@ def start_evaluate_baseline(path_to_model,
     print("\n{:-^80}".format("Preparing training labels for {} classification problem".format("multi" if do_multiclass else "binary")))
     
     if do_multiclass:
-        title_mappings, label_to_id = as_multiclass_problem()
+        title_mappings, label_to_id = __as_multiclass_problem()
     else:
-        title_mappings, label_to_id = as_binary_problem()
+        title_mappings, label_to_id = __as_binary_problem()
     
     print("\n{:-^80}".format("Start prediction"))
     results = []
