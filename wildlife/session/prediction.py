@@ -31,7 +31,7 @@ def start_prediction(config, path_to_model, source_split, target_split):
         except:
             print("Processed all images: {}".format(processed_count))
         
-    results.write_vqa_results_file(path_to_model, target_split)
+    results.write_results_file(path_to_model, target_split)
     results.write_human_results_file(path_to_model)
 
 

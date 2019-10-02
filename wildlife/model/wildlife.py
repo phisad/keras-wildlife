@@ -1,4 +1,7 @@
 '''
+
+NOT IN USE FOR NOW
+
 Created on 12.05.2019
 
 A model learning on the wildlife dataset. This is also often referenced

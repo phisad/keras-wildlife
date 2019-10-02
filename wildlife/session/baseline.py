@@ -12,7 +12,7 @@ from wildlife.model import focus
 from wildlife.session import to_categorical
 from wildlife.session.callbacks import create_tensorboard_from_dataset, \
     create_checkpointer
-from wildlife.session.weights import calculate_class_weights
+from wildlife.session.class_weights import calculate_class_weights
 from wildlife.session.prediction import prediction_evaluate, analyse_results, \
     print_metrics
 
@@ -92,6 +92,7 @@ def start_training_baseline_from_config(config, dataset_dir, split_name,
     print("\n{:-^80}".format("Preparing model for training"))
     model_classifier = config.getModelClassifier()
     use_bn = config.getUseBatchNormalization()
+    """ Notice: We only use focus model as a baseline for now """
     model = focus.create_model(model_classifier, y_train_cat, use_batch_norm=use_bn)
     
     print("\n{:-^80}".format("Preparing callbacks for training"))

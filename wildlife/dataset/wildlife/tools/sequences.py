@@ -1,4 +1,7 @@
 '''
+
+NOT USED FOR NOW
+
 Created on 11.05.2019
 
 @author: Philipp
