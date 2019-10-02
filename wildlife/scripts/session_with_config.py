@@ -20,7 +20,7 @@ def main():
     parser.add_argument("-c", "--configuration", help="Determine a specific configuration to use. If not specified, the default is used.")
     parser.add_argument("-f", "--path_to_model", help="The absolute path to the model to predict or continue training.")
     parser.add_argument("-s", "--split_name", help="""The split name to perform the prediction or training on. This is required for predict. For example 'wl-c11'.""")
-    parser.add_argument("-sf", "--split_files", help="A whitespace separated list of file names. For wildlife training defaults to [target_train, target_dev, target_test]")
+    parser.add_argument("-sf", "--split_files", help="Can be used to force training only on the training split file (without validation). A whitespace separated list of file names. For wildlife training defaults to [target_train, target_dev, target_test]")
     parser.add_argument("-m", "--do_multiclass", action="store_true", default=False)
     parser.add_argument("-l", "--inmemory", action="store_true", default=False, help="Whether to load all data into memory before operation (only for evaluate).")
     parser.add_argument("-d", "--dryrun", action="store_true")
