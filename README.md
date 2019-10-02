@@ -135,8 +135,18 @@ For multiclass training run the same command with the *-m* option:
 
     wildlife-session training -s wl-c11 -m
 
-The training will automatically prepare and start everything based on the configuration. 
+The training will automatically prepare and start everything based on the configuration. Notice: For now, the training is by loading all prepared splits into memory.
 
-The script will try to load the dataset from the configured *DatasetDirectoryPath* folder. At the dataset directory path a folder with the given *split_name* must exist. The split name folder contains the TFRecord files and is for example *wl-c11* for wildlife by default.
+The script will try to load the dataset from the configured *DatasetDirectoryPath* folder. At the dataset directory path a folder with the given *split_name* must exist. The split name folder contains the TFRecord files and is for example *wl-c11* for wildlife by default. 
 
-Notice: For now, the training is by loading all prepared splits into memory.
+After training an evaluation can be performed on the test set:
+
+    wildlife-session evaluate -f /cache/tensorboard-logdir/wildlife/wl-c11/softmax/binary/19-51-33/wildlife-baseline-softmax-bn.h5 -s wl-c11 [-m]
+
+The evaluation is loading the trained model and applied it by default against the *target_test* split. A specific split could be specified with the *split_files* option. In the end, the script creates a report about the models prediction performance.
+ 
+# ToDo
+- allow the user to specify the *split_files* when creating the csv files (for now only the selection of the file is possible; on csv creation during prepare always the same names are used)
+- allow the user to specify the *split_name* when creating the csv files
+- allow the user to configure the category splits and the mappings (for now they are hard coded)
+- allow the user to perform a prediction and create an according results file (for now only the analysis report is shown)
