@@ -1,6 +1,6 @@
 # keras-wildlife
 
-Binary and multiclass animal detection on a wildlife camera trap dataset using keras and tensorflow.
+Binary and multiclass animal detection on a wildlife camera trap dataset using Keras and TensorFlow.
 
 A simple baseline for animal detection
 - creating the dataset splits for training, validation and test
@@ -75,7 +75,7 @@ Notice: The splits are prefixed with *target*, because this is the targeted imag
 
 ### Preparing ImageNet dataset images as source domain
 
-Download the ImageNet dataset files put them folder-wise in a directory like
+Download the [ImageNet dataset](http://image-net.org/index) files put them folder-wise in a directory like
     
     # The imagenet dataset directory is supposed to an image folder for each imagenet category to be used 
     ImagenetDatasetDirectoryPath = /data/imagenet
