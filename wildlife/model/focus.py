@@ -30,7 +30,7 @@ def create_model(classifier_type, y_train_cat, title_mappings=None, use_batch_no
         @param classifier_type: str
             Either "experts" or "softmax" see description above.
         @param y_train_cat: array
-            The categorical training label ids to automatically determine the number of outputs.
+            The categorical training label ids to **automatically** determine the number of outputs.
         @param title_mappings: dict (for experts only)
             The mapping from category id to label name to name the expert outputs.
         @param use_batch_norm: boolean (for softmax only)

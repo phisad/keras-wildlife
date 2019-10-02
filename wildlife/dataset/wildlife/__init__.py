@@ -17,7 +17,26 @@ from wildlife.dataset.images.mappings import list_sorted
 ANIMAL_LABELS = ["Rabbit", "Hedgehog", "Marten", "Racoon", "Cat", "Wild_Boar",
                  "Fox", "Squirrel", "Horse", "Vole", "Roe_deer" , "Hare", "Fallow_deer", "Dog", "Bird"]
 
-
+"""
+    The initial dataset returned:
+        Hedgehog       :      3
+        Rabbit         :      3
+        Squirrel       :      9
+        Vole           :     15
+        Horse          :     66
+        Wild_Boar      :    132
+        Racoon         :    171
+        Marten         :    213
+        Fox            :    327
+        Cat            :    375
+        Dog            :    433
+        Fallow_deer    :   1029
+        Hare           :   1146
+        Bird           :   1512
+        Roe_deer       :   3192
+        background     : 129810
+        Total          : 138436
+"""
 def list_wildlife_labelled(labelfile="/data/wildlife/label.csv", select_classes=[]):
     animals = ANIMAL_LABELS
     if select_classes:

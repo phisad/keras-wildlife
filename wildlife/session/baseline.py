@@ -24,14 +24,15 @@ def __as_binary_problem():
         "horse"       :  1,  # domestic animal
         "cat"         :  1,  # domestic animal
         "dog"         :  1,  # domestic animal
-        "deer"        :  1,
+        "fallow"      :  1,  # deer
+        "roe"         :  1,  # deer
         "marten"      :  1,
         "hare"        :  1,
         "bird"        :  1,
         "wildboar"    :  1,
         "racoon"      :  1,
         "fox"         :  1
-    }  # Total: 11
+    }  # Total: 12
     title_mappings = {0: 'background', 1: 'animal'}
     return title_mappings, label_to_id
 
@@ -42,14 +43,15 @@ def __as_multiclass_problem():
         "horse"       :  1,  # domestic animal
         "cat"         :  2,  # domestic animal
         "dog"         :  3,  # domestic animal
-        "deer"        :  4,
-        "marten"      :  5,
-        "hare"        :  6,
-        "bird"        :  7,
-        "wildboar"    :  8,
-        "racoon"      :  9,
-        "fox"         : 10
-    }  # Total: 11
+        "fallow"      :  4,  # deer
+        "roe"         :  5,  # deer
+        "marten"      :  6,
+        "hare"        :  7,
+        "bird"        :  8,
+        "wildboar"    :  9,
+        "racoon"      : 10,
+        "fox"         : 11
+    }  # Total: 12
 
     def id_to_label(label_to_id):
         return dict([(cls, label) for (label, cls) in label_to_id.items()])
