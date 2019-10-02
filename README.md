@@ -150,3 +150,9 @@ The evaluation is loading the trained model and applied it by default against th
 - allow the user to specify the *split_name* when creating the csv files
 - allow the user to configure the category splits and the mappings (for now they are hard coded)
 - allow the user to perform a prediction and create an according results file (for now only the analysis report is shown)
+
+### Sample training progress in tensorboard
+
+For the binary classification the training progress for the accuracy and the loss is shown in tensorboard. In this sample we can see a discontinuity between training and validation scores showing intermediate overfitting on the training data. The wildlife-session only stores the model which performs best on the validation set.
+
+![Sample training progress](sample_training_tensorboard.PNG "Sample training progress")
